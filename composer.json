@@ -1,0 +1,24 @@
+{
+    "name": "rde/php-terminal",
+    "description": "處理php終端機輸出",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Colin",
+            "email": "colin1124x@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rde\\": "src/"
+        }
+    },
+    "config": {
+        "preferred-install": "auto"
+    },
+    "prefer-stable": true,
+    "minimum-stability": "dev"
+}
