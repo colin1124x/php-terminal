@@ -20,7 +20,7 @@ class FlagTest extends PHPUnit_Framework_TestCase
         $args = $flag->parse(array(
             './cmd',
             'x',
-            '--int', '123',
+            '--int=123',
             '--str', 'real word',
             '--bool',
             'y',
@@ -29,6 +29,32 @@ class FlagTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('real word', $str);
         $this->assertEquals(123, $int);
         $this->assertEquals(array('x', 'y'), $args);
+    }
+
+    public function testReference()
+    {
+        $flag = new Rde\Flag();
+        $flag->stringVar($str, 'str');
+        $flag->intVar($int, 'int');
+        $flag->boolVar($bool, 'bool');
+        $args = $flag->parse(array(
+            './cmd',
+            '--str', 'abc',
+            '--int=123',
+            '--bool',
+        ));
+
+        $this->assertEquals('abc', $str);
+        $this->assertEquals(123, $int);
+        $this->assertEquals(true, $bool);
+    }
+
+    /** @expectedException InvalidArgumentException */
+    public function testException()
+    {
+        $flag = new Rde\Flag;
+        $flag->string('x');
+        $flag->stringVar($x, 'x');
     }
     
     public function testHelp()

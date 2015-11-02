@@ -20,9 +20,23 @@ class Flag
         return $this->set('%s', $name, $default, $describe);
     }
 
+    public function stringVar(&$var, $name, $default = null, $describe = null)
+    {
+        $var = $default;
+        $this->string($name, $default, $describe);
+        $this->map[$name][2] = &$var;
+    }
+
     public function &int($name, $default = null, $describe = null)
     {
         return $this->set('%d', $name, $default, $describe);
+    }
+
+    public function intVar(&$var, $name, $default = null, $describe = null)
+    {
+        $var = $default;
+        $this->int($name, $default, $describe);
+        $this->map[$name][2] = &$var;
     }
 
     public function &bool($name, $default = null, $describe = null)
@@ -30,14 +44,20 @@ class Flag
         return $this->set('bool', $name, $default, $describe);
     }
 
+    public function boolVar(&$var, $name, $default = null, $describe = null)
+    {
+        $var = $default;
+        $this->bool($name, $default, $describe);
+        $this->map[$name][2] = &$var;
+    }
+
     protected function &set($format, $name, $default, $describe)
     {
-        if ( ! isset($this->map[$name])) {
-            $this->map[$name] = array($format, $describe, $default);
-        } else {
-            null !== $describe and $this->map[$name][1] = $describe;
-            null !== $default and $this->map[$name][2] = $default;
+        if (isset($this->map[$name])) {
+            throw new \InvalidArgumentException("重複宣告 {$name}");
         }
+
+        $this->map[$name] = array($format, $describe, $default);
 
         return $this->map[$name][2];
     }
@@ -59,6 +79,19 @@ class Flag
 
             if (0 === strpos($opt, '--')) {
                 $name = substr($opt, 2);
+                
+                if (false !== strpos($name, '=')) {
+                    list($name, $var) = preg_split('/=/', $name, 2);
+
+                    if ( ! isset($this->map[$name]) || 'help' == $name) {
+                        $this->usage();
+                        return;
+                    }
+                    $this->map[$name][2] = self::parseBySscanf($var, $this->map[$name][0]);
+                    unset($name, $var);
+                    continue;
+                }
+
                 if ( ! isset($this->map[$name]) || 'help' == $name) {
                     $this->usage();
                     return;
