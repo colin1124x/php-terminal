@@ -17,7 +17,7 @@ class Flag
 
     public function &string($name, $default = null, $describe = null)
     {
-        return $this->set('%s', $name, $default, $describe);
+        return $this->set('%s', $name, (string)$default, $describe);
     }
 
     public function stringVar(&$var, $name, $default = null, $describe = null)
@@ -29,7 +29,7 @@ class Flag
 
     public function &int($name, $default = null, $describe = null)
     {
-        return $this->set('%d', $name, $default, $describe);
+        return $this->set('%d', $name, (int)$default, $describe);
     }
 
     public function intVar(&$var, $name, $default = null, $describe = null)
@@ -41,7 +41,7 @@ class Flag
 
     public function &bool($name, $default = null, $describe = null)
     {
-        return $this->set('bool', $name, $default, $describe);
+        return $this->set('bool', $name, (bool)$default, $describe);
     }
 
     public function boolVar(&$var, $name, $default = null, $describe = null)
