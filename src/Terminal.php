@@ -2,18 +2,25 @@
 
 class Terminal
 {
-    public static function stdout($text, $color = "\e[m", $new_line = true)
+    const COLOR_NONE = "\e[m";
+
+    public static function stdin($len = 1024)
     {
-        self::writeTo(STDOUT, $text, $color, $new_line);
+        return fread(STDIN, (int)$len);
     }
 
-    public static function stderr($text, $color = "\e[m", $new_line = true)
+    public static function stdout($text, $color = self::COLOR_NONE, $new_line = true)
     {
-        self::writeTo(STDERR, $text, $color, $new_line);
+        return self::writeTo(STDOUT, $text, $color, $new_line);
+    }
+
+    public static function stderr($text, $color = self::COLOR_NONE, $new_line = true)
+    {
+        return self::writeTo(STDERR, $text, $color, $new_line);
     }
 
     protected static function writeTo($resource, $text, $color, $new_line)
     {
-        fwrite($resource, "{$color}{$text}\e[m".($new_line?"\n":''));
+        return fwrite($resource, "{$color}{$text}".self::COLOR_NONE.($new_line?"\n":''));
     }
 }
